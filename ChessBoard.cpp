@@ -1,5 +1,5 @@
 #include "stdafx.h"
-
+#include "ChessBoard.h"
 
 ChessBoard::ChessBoard()
 {
@@ -11,6 +11,7 @@ ChessBoard::ChessBoard()
 		}
 	}
 }
+
 
 void ChessBoard::debugPrint()
 {
@@ -32,7 +33,61 @@ void ChessBoard::debugPrint()
 	}
 }
 
+
+PlayerColour ChessBoard::getTurn()
+{
+	return turn;
+}
+
+
 void ChessBoard::placePiece(char file, int rank, ChessPiece piece)
 {
 	board[rank - 1][file - 'A'] = piece;
+}
+
+
+ChessBoardIterator ChessBoard::begin()
+{
+	return ChessBoardIterator(this, 0, 0);
+}
+
+
+ChessBoardIterator ChessBoard::end()
+{
+	return ChessBoardIterator(this, 8, 0);
+}
+
+
+ChessBoardIterator::ChessBoardIterator(ChessBoard* cb_, int rank_, int file_)
+	: rank(rank_), file(file_), cb(cb_)
+{}
+
+
+bool ChessBoardIterator::operator != (const ChessBoardIterator& that)
+{
+	return !operator == (that);
+}
+
+
+bool ChessBoardIterator::operator == (const ChessBoardIterator& that)
+{
+	return this->rank == that.rank && this->file == that.file;
+}
+
+
+ChessBoardIterator::value_type ChessBoardIterator::operator*() const
+{
+	return cb->board[rank][file];
+}
+
+
+ChessBoardIterator& ChessBoardIterator::operator++()
+{
+	++file;
+	if (file >= 8)
+	{
+		++rank;
+		file = 0;
+	}
+	return *this;
 }
